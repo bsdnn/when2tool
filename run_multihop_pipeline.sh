@@ -80,11 +80,15 @@ for MODEL in "${MODELS[@]}"; do
   if should_run 2; then
     echo "[Step 2/6] Extracting features..."
     mkdir -p "$PROBE_DIR"
-    python src/extract_features.py --tensor_parallel_size "${TP:-4}" \
-      --model_path "$MODEL" \
-      --output_dir "$PROBE_DIR" \
-      --data_path "$DATA_TRAIN" \
-      --data_path_test "$DATA_TEST"
+    # Two processes: the vLLM labelling pass exits (and frees its GPU memory)
+    # before the HF model is loaded for hidden-state extraction.
+    for PHASE in inference extract; do
+      python src/extract_features.py --tensor_parallel_size "${TP:-4}" --phase "$PHASE" \
+        --model_path "$MODEL" \
+        --output_dir "$PROBE_DIR" \
+        --data_path "$DATA_TRAIN" \
+        --data_path_test "$DATA_TEST"
+    done
   fi
 
   # Step 3: Train probe
