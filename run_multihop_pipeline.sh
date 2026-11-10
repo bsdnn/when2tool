@@ -54,7 +54,7 @@ should_run() {
 REG=10000
 THRESHOLDS="0.1 0.3 0.5 0.7 0.9"
 TEMPERATURE=2.0
-N_RUNS=3
+N_RUNS="${N_RUNS:-3}"  # evaluation runs per setting; the paper reports the mean of 3
 
 DATA_TRAIN="./data/tasks_v1_multihop_train.json"
 DATA_TEST="./data/tasks_v1_multihop_test.json"
