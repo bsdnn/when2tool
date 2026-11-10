@@ -80,7 +80,7 @@ for MODEL in "${MODELS[@]}"; do
   if should_run 2; then
     echo "[Step 2/6] Extracting features..."
     mkdir -p "$PROBE_DIR"
-    python src/extract_features.py \
+    python src/extract_features.py --tensor_parallel_size "${TP:-4}" \
       --model_path "$MODEL" \
       --output_dir "$PROBE_DIR" \
       --data_path "$DATA_TRAIN" \
@@ -115,7 +115,7 @@ for MODEL in "${MODELS[@]}"; do
   if should_run 5; then
     echo "[Step 5/6] Probe-guided eval..."
     for t in $THRESHOLDS; do
-      python src/run_probe_eval.py \
+      python src/run_probe_eval.py --tensor_parallel_size "${TP:-4}" \
         --model_path "$MODEL" \
         --probe_dir "$PROBE_DIR" \
         --data_path "$DATA_TEST" \
